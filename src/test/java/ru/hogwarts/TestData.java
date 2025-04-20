@@ -14,4 +14,5 @@ public class TestData {
 
     public static final List<Student> GRYFFINDOR_STUDENTS = List.of(HARRY, HERMIONE);
     public static final List<Student> ALL_STUDENTS = List.of(HARRY, HERMIONE, DRACO);
+    public static final List<Faculty> ALL_FACULTIES = List.of(GRYFFINDOR, SLYTHERIN);
 }

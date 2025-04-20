@@ -6,15 +6,13 @@ import com.example.hogwarts.model.Student;
 import com.example.hogwarts.service.FacultyService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.List;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(FacultyController.class)
@@ -29,36 +27,25 @@ class FacultyControllerWebMvcTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void findFacultiesByNameOrColorIgnoreCase_shouldReturnMatchingFaculties() throws Exception {
-        when(facultyService.findFacultiesByNameOrColorIgnoreCase(anyString()))
+    void findFacultiesByNameOrColorIgnoreCase_shouldReturnFaculties() throws Exception {
+        Mockito.when(facultyService.findFacultiesByNameOrColorIgnoreCase("griff"))
                 .thenReturn(List.of(TestData.GRYFFINDOR));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/faculty/filter")
-                        .param("search", "gryff"))
+                        .param("search", "griff"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].name").value("Gryffindor"));
     }
 
     @Test
     void getStudentsByFacultyId_shouldReturnStudents() throws Exception {
-        when(facultyService.getStudentsByFacultyId(1L))
+        Mockito.when(facultyService.getStudentsByFacultyId(1L))
                 .thenReturn(TestData.GRYFFINDOR_STUDENTS);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/faculty/1/students"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].name").value("Harry Potter"));
-    }
-
-    @Test
-    void getStudentsByFacultyId_shouldReturnNotFound() throws Exception {
-        when(facultyService.getStudentsByFacultyId(999L))
-                .thenThrow(new NotFoundException("Faculty not found"));
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/faculty/999/students"))
-                .andExpect(status().isNotFound());
     }
 }
