@@ -1,28 +1,32 @@
-package com.example.hogwarts.repository;
+package ru.hogwarts.school.service;
 
-import com.example.hogwarts.model.Student;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.StudentRepository;
 
-@DataJpaTest
-class StudentRepositoryTest {
-    @Autowired
-    private StudentRepository studentRepository;
+import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
+class StudentServiceTest {
+
+    @Mock
+    private StudentRepository repository;
+
+    @InjectMocks
+    private StudentService service;
 
     @Test
-    void findByAgeBetween_shouldReturnStudentsInRange() {
-        // Given
-        Student student1 = new Student(null, "Test1", 15, null);
-        Student student2 = new Student(null, "Test2", 20, null);
-        studentRepository.save(student1);
-        studentRepository.save(student2);
+    void createStudent_shouldSaveToRepository() {
+        Student student = new Student("Hermione", 18);
+        when(repository.save(any())).thenReturn(student);
 
-        // When
-        var result = studentRepository.findByAgeBetween(15, 20);
-
-        // Then
-        assertEquals(2, result.size());
+        Student result = service.createStudent(student);
+        verify(repository).save(student);
+        assertThat(result.getName()).isEqualTo("Hermione");
     }
 }

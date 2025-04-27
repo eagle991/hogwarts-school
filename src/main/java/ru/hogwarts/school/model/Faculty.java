@@ -14,7 +14,6 @@ public class Faculty {
     @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY)
     private List<Student> students;
 
-    // Constructors, getters and setters
     public Faculty() {}
 
     public Faculty(Long id, String name, String color) {
@@ -23,7 +22,7 @@ public class Faculty {
         this.color = color;
     }
 
-    // Getters and setters
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getName() { return name; }
