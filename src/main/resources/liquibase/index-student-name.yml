@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-index-student-name
+      author: your-name
+      changes:
+        - createIndex:
+            tableName: student
+            columns:
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+            indexName: idx_student_name

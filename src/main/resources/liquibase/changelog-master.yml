@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: classpath:liquibase/index-student-name.yml
+  - include:
+      file: classpath:liquibase/index-faculty-name-color.yml
