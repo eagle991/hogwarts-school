@@ -8,11 +8,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
+import java.util.Arrays;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(StudentController.class)
 class StudentControllerTest {
@@ -24,21 +24,32 @@ class StudentControllerTest {
     private StudentService studentService;
 
     @Test
-    void getNamesStartingWithA_shouldReturnFilteredAndSortedNames() throws Exception {
-        when(studentService.getNamesStartingWithA()).thenReturn(List.of("ALICE", "ANDREW"));
+    void printStudentsParallel_shouldReturnOk() throws Exception {
+        when(studentService.getAllStudents()).thenReturn(Arrays.asList(
+                new Student(1L, "Harry", 17),
+                new Student(2L, "Hermione", 18),
+                new Student(3L, "Ron", 17),
+                new Student(4L, "Draco", 17),
+                new Student(5L, "Neville", 17),
+                new Student(6L, "Luna", 16)
+        ));
 
-        mockMvc.perform(get("/student/names-starting-with-a"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0]").value("ALICE"));
+        mockMvc.perform(get("/students/print-parallel"))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void getAverageAge_shouldReturnAverageAge() throws Exception {
-        when(studentService.getAverageAge()).thenReturn(20.5);
+    void printStudentsSynchronized_shouldReturnOk() throws Exception {
+        when(studentService.getAllStudents()).thenReturn(Arrays.asList(
+                new Student(1L, "Harry", 17),
+                new Student(2L, "Hermione", 18),
+                new Student(3L, "Ron", 17),
+                new Student(4L, "Draco", 17),
+                new Student(5L, "Neville", 17),
+                new Student(6L, "Luna", 16)
+        ));
 
-        mockMvc.perform(get("/student/average-age"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("20.5"));
+        mockMvc.perform(get("/students/print-synchronized"))
+                .andExpect(status().isOk());
     }
 }
